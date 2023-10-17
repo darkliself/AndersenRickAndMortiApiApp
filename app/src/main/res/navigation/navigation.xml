@@ -6,9 +6,9 @@
     app:startDestination="@id/character">
     <fragment
         android:id="@+id/character"
-        android:name="com.example.andersenrickandmortiapiapp.fragments.character.CharacterFragment"
+        android:name="com.example.andersenrickandmortiapiapp.fragments.character.list.CharacterFragment"
         android:label="fragment_character"
-        tools:layout="@layout/fragment_character" >
+        tools:layout="@layout/fragment_characters">
 
         <action
             android:id="@+id/action_character_to_characterData"
@@ -17,24 +17,70 @@
 
     <fragment
         android:id="@+id/characterData"
-        android:name="com.example.andersenrickandmortiapiapp.fragments.character_data.CharacterData"
+        android:name="com.example.andersenrickandmortiapiapp.fragments.character.details.CharacterDetails"
         android:label="fragment_character_data"
 
-        tools:layout="@layout/fragment_character_data" >
+        tools:layout="@layout/fragment_character_details">
         <argument
             android:name="id"
-            app:argType="integer"
-            android:defaultValue = "11"/>
+            android:defaultValue="11"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_characterData_to_episodeDetails"
+            app:destination="@id/episodeDetails" />
+        <action
+            android:id="@+id/action_characterData_to_locationDetails"
+            app:destination="@id/locationDetails" />
     </fragment>
     <fragment
         android:id="@+id/episodes"
-        android:name="com.example.andersenrickandmortiapiapp.fragments.episode.EpisodesFragment"
+        android:name="com.example.andersenrickandmortiapiapp.fragments.episode.list.EpisodesFragment"
         android:label="fragment_episodes"
-        tools:layout="@layout/fragment_episodes" />
+        tools:layout="@layout/fragment_episodes">
+
+        <action
+            android:id="@+id/action_episodes_to_episodeDetails"
+            app:destination="@id/episodeDetails" />
+    </fragment>
+    <fragment
+        android:id="@+id/episodeDetails"
+        android:name="com.example.andersenrickandmortiapiapp.fragments.episode.details.EpisodeDetails"
+        android:label="fragment_episode_details"
+        tools:layout="@layout/fragment_episode_details">
+        <argument
+            android:name="id"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_episodeDetails_to_characterData"
+            app:destination="@id/characterData" />
+        <action
+            android:id="@+id/action_episodeDetails_to_locationDetails"
+            app:destination="@id/locationDetails" />
+    </fragment>
+
     <fragment
         android:id="@+id/locations"
-        android:name="com.example.andersenrickandmortiapiapp.fragments.location.LocationsFragment"
+        android:name="com.example.andersenrickandmortiapiapp.fragments.location.list.LocationsFragment"
         android:label="fragment_locations"
-        tools:layout="@layout/fragment_locations" />
+        tools:layout="@layout/fragment_locations" >
+        <action
+            android:id="@+id/action_locations_to_locationDetails"
+            app:destination="@id/locationDetails" />
+    </fragment>
+    <fragment
+        android:id="@+id/locationDetails"
+        android:name="com.example.andersenrickandmortiapiapp.fragments.location.details.LocationDetails"
+        android:label="fragment_location_details"
+        tools:layout="@layout/fragment_location_details" >
+        <argument
+            android:name="id"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_locationDetails_to_characterData"
+            app:destination="@id/characterData" />
+        <action
+            android:id="@+id/action_locationDetails_to_episodeDetails"
+            app:destination="@id/episodeDetails" />
+    </fragment>
 
 </navigation>

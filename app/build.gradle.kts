@@ -66,8 +66,8 @@ dependencies {
 
 
     //dagger-hilt
-    implementation ("com.google.dagger:hilt-android:2.48")
-    kapt ("com.google.dagger:hilt-compiler:2.48")
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-compiler:2.48")
 
     // retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -75,5 +75,22 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
     implementation("com.squareup.retrofit2:adapter-rxjava2:2.9.0")
     implementation("com.github.akarnokd:rxjava3-retrofit-adapter:3.0.0")
+
+    // Room components
+    implementation("androidx.room:room-runtime:2.5.0")
+    kapt("androidx.room:room-compiler:2.5.0")
+
+    // annotationProcessor "androidx.room:room-compiler:2.4.3"
+    implementation("androidx.room:room-ktx:2.5.0")
+    androidTestImplementation("androidx.room:room-testing:2.5.0")
+
+    // Paging
+    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
+    implementation("androidx.paging:paging-compose:3.3.0-alpha02")
+
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
+
+    implementation("io.coil-kt:coil:2.4.0")
+
 
 }

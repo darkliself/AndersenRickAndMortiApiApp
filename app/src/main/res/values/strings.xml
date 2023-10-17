@@ -13,4 +13,21 @@
     <string name="name">name</string>
     <string name="type" />
     <string name="dimension" />
+    <string name="episode_details">episode details</string>
+    <string name="location_details">Location details</string>
+    <string name="species">species</string>
+    <string name="submit">Submit</string>
+    <string name="reset">Reset</string>
+    <string name="dead">dead</string>
+    <string name="unknown">unknown</string>
+    <string name="none">none</string>
+    <string name="alive">alive</string>
+    <string name="female">female</string>
+    <string name="male">male</string>
+    <string name="genderless">genderless</string>
+    <string name="search">search</string>
+    <string name="url">url</string>
+    <string name="created">created</string>
+    <string name="status">status</string>
+    <string name="gender">gender</string>
 </resources>
