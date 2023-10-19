@@ -11,8 +11,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        val context = applicationContext
-//        context.deleteDatabase("RickAndMortyDB")
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
