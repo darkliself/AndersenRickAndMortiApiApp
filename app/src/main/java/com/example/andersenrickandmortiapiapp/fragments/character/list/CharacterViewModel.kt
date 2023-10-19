@@ -1,116 +1,102 @@
 package com.example.andersenrickandmortiapiapp.fragments.character.list
 
-import android.util.Log
+import android.content.Context
+import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.andersenrickandmortiapiapp.R
 import com.example.andersenrickandmortiapiapp.data.mappers.toCharacterInfo
+import com.example.andersenrickandmortiapiapp.data.room.RoomDataBase
 import com.example.andersenrickandmortiapiapp.repository.CharterSearchQuery
-import com.example.andersenrickandmortiapiapp.repository.UseCase
-import com.example.andersenrickandmortiapiapp.repository.RoomDbRepository
-import com.example.andersenrickandmortiapiapp.retrofit.rick_and_morty.models.characters.character_list.CharacterInfo
+import com.example.andersenrickandmortiapiapp.repository.RetrofitRepository
+import com.example.andersenrickandmortiapiapp.retrofit.models.characters.CharacterInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.math.ceil
 
 
 @HiltViewModel
 class CharacterViewModel @Inject constructor(
-    private val roomDbRepository: RoomDbRepository,
-    private val useCase: UseCase,
+    private val roomDb: RoomDataBase,
+    private val retrofitRepository: RetrofitRepository,
 ) : ViewModel() {
 
     private val _character = MutableStateFlow<List<CharacterInfo>>(emptyList())
     val character: MutableStateFlow<List<CharacterInfo>>
         get() = _character
-    private val _error = MutableStateFlow(false)
-    val error: MutableStateFlow<Boolean>
-        get() = _error
-    private var _isLoading = MutableStateFlow(false)
-    val isLoading: MutableStateFlow<Boolean>
+    private var _isLoading = MutableStateFlow(View.INVISIBLE)
+    val isLoading: MutableStateFlow<Int>
         get() = _isLoading
-
     var isAllowedPagination = true
     var isConnected = true
     private var pagesCount = 0
-    private var pageIndex = 1
+    private var pageIndex = 0
     private var elementsPerPage = 20
 
-//    init {
-//        viewModelScope.launch {
-//            _isLoading.emit(true)
-//            Log.d("PAGINATION", "INIT")
-//            initEpisodesList()
-//            _isLoading.emit(false)
-//        }
-//    }
-
-    fun loadNextPage() {
-        if (pageIndex >= pagesCount) {
+    fun getData() {
+        if (pageIndex >= pagesCount && pagesCount != 0) {
             return
         }
         pageIndex++
         viewModelScope.launch(Dispatchers.IO) {
+            _isLoading.emit(View.VISIBLE)
             if (isConnected) {
-                _character.emit(character.value.plus(useCase.getCharactersAndSaveToDb(pageIndex)))
+                val queryResult = retrofitRepository.getCharacters(pageIndex)
+                pagesCount = queryResult.info.pages
+                _character.emit(character.value.plus(queryResult.listOfCharacters))
             } else {
-                roomDbRepository.db.characterDao.getAllCharacters().collect { list ->
+                roomDb.characterDao.getAllCharacters().collect { list ->
                     if (list.isNotEmpty()) {
                         pagesCount = ceil(list.size / elementsPerPage.toFloat()).toInt()
                         _character.emit(list.map { it.toCharacterInfo() }
                             .take(elementsPerPage * pageIndex))
-                    } else {
-                        _error.emit(true)
                     }
+                    _isLoading.emit(View.INVISIBLE)
                 }
             }
+            _isLoading.emit(View.INVISIBLE)
         }
     }
 
-    fun initCharactersList() {
-        viewModelScope.launch(Dispatchers.IO) {
+    fun search(query: CharterSearchQuery, context: Context) {
+        viewModelScope.launch {
+            var queryResult: List<CharacterInfo> = emptyList()
             if (isConnected) {
-                val queryResult = useCase.getCharactersAndSaveToDb(pageIndex)
-                pagesCount = useCase.characterPagesCount
-//            Log.d("PAGINATION_PROBLEM", pagesCount.toString())
-                _character.emit(queryResult)
-            } else {
-                roomDbRepository.db.characterDao.getAllCharacters().collect { list ->
-                    if (list.isNotEmpty()) {
-                        pagesCount = ceil(list.size.toFloat() / elementsPerPage.toFloat()).toInt()
-                        Log.d("PAGINATION", "page count<<< $pagesCount")
-                        val result = list.map { it.toCharacterInfo() }.take(elementsPerPage)
-                        _character.emit(result)
-                    } else {
-                        _error.emit(true)
-                    }
+                withContext(Dispatchers.IO) {
+                    queryResult = retrofitRepository.searchCharacters(query).listOfCharacters
                 }
-            }
-        }
-    }
-
-    fun search(query: CharterSearchQuery) {
-        viewModelScope.launch(Dispatchers.IO) {
-            Log.d("SEARCH_DATA", query.toString())
-            var queryResult: List<CharacterInfo> = if (isConnected) {
-                useCase.searchCharacters(query).listOfCharacters
             } else {
-                roomDbRepository.db.characterDao.getFilteredCharacters(
-                    name = query.name,
-                    gender = query.gender,
-                    species = query.species,
-                    status = query.status,
-                    type = query.type
-                ).map { it.toCharacterInfo() }
+                withContext(Dispatchers.IO) {
+                    roomDb.characterDao.getFilteredCharacters(
+                        name = query.name,
+                        gender = query.gender,
+                        species = query.species,
+                        status = query.status,
+                        type = query.type
+                    ).map { it.toCharacterInfo() }
+                }
             }
             if (queryResult.isNotEmpty()) {
                 isAllowedPagination = false
                 _character.emit(queryResult)
+            } else {
+                Toast.makeText(context, context.getString(R.string.no_results), Toast.LENGTH_LONG).show()
             }
         }
     }
 
+    fun refreshState() {
+        viewModelScope.launch {
+            _character.emit(emptyList())
+        }
+        pageIndex = 0
+        isAllowedPagination = true
+        getData()
+    }
 }
 

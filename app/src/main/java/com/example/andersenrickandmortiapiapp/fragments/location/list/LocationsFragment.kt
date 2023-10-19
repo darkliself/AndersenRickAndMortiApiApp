@@ -1,12 +1,9 @@
 package com.example.andersenrickandmortiapiapp.fragments.location.list
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +20,11 @@ class LocationsFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        viewModel.isConnected = isNetworkConnected(requireContext())
+        if (viewModel.location.value.isEmpty()) {
+            viewModel.getData()
+        }
+        showNoInternetToast()
     }
 
     override fun onCreateView(
@@ -36,8 +37,7 @@ class LocationsFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.isConnected = isNetworkConnected(requireContext())
-        viewModel.initLocationList()
+
         recyclerView = binding.locationItemRecyclerView
         val adapter = LocationsAdapter()
 
@@ -45,6 +45,7 @@ class LocationsFragment : BaseFragment() {
             recyclerView.adapter = adapter
             recyclerView.addOnScrollListener(this@LocationsFragment.scrollListener)
         }
+        addDecoration(recyclerView)
 
         lifecycleScope.launch {
             viewModel.location.collect {
@@ -53,33 +54,23 @@ class LocationsFragment : BaseFragment() {
         }
 
         binding.swiperefresh.setOnRefreshListener {
-            viewModel.isAllowedPagination = true
             viewModel.isConnected = isNetworkConnected(requireContext())
-            viewModel.initLocationList()
+            viewModel.refreshState()
             binding.swiperefresh.isRefreshing = false
         }
+        lifecycleScope.launch {
+            viewModel.isLoading.collect {
+                binding.loadingIndicator.visibility = it
+            }
+        }
     }
-    var isScrolling = false
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
-            if (!recyclerView.canScrollVertically(1) && dy > 0)
-            {
+            if (!recyclerView.canScrollVertically(1) && dy > 0) {
                 viewModel.isConnected = isNetworkConnected(requireContext())
-                viewModel.loadNextPage()
-            }else if (!recyclerView.canScrollVertically(-1) && dy < 0)
-            {
-
+                viewModel.getData()
             }
         }
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            super.onScrollStateChanged(recyclerView, newState)
-            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                isScrolling = true
-            }
-        }
-
-
     }
-
 }

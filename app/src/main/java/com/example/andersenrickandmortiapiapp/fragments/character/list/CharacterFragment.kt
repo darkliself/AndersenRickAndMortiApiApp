@@ -1,11 +1,9 @@
 package com.example.andersenrickandmortiapiapp.fragments.character.list
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +18,15 @@ class CharacterFragment : BaseFragment() {
     private val viewModel: CharacterViewModel by activityViewModels()
     private lateinit var recyclerView: RecyclerView
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.isConnected = isNetworkConnected(requireContext())
+        if (viewModel.character.value.isEmpty()) {
+            viewModel.getData()
+        }
+        showNoInternetToast()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,14 +37,13 @@ class CharacterFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.isConnected = isNetworkConnected(requireContext())
-        viewModel.initCharactersList()
         recyclerView = binding.characterItemRecyclerView
         val adapter = CharacterAdapter()
         recyclerView.apply {
             recyclerView.adapter = adapter
             recyclerView.addOnScrollListener(this@CharacterFragment.scrollListener)
         }
+        addDecoration(recyclerView)
 
         lifecycleScope.launch {
             viewModel.character.collect {
@@ -46,41 +52,27 @@ class CharacterFragment : BaseFragment() {
         }
 
         binding.swiperefresh.setOnRefreshListener {
-            viewModel.isAllowedPagination = true
-            Log.d("REFRESH_DD", "is here")
             viewModel.isConnected = isNetworkConnected(requireContext())
-            viewModel.initCharactersList()
+            viewModel.refreshState()
             binding.swiperefresh.isRefreshing = false
+        }
+
+        lifecycleScope.launch {
+            viewModel.isLoading.collect {
+                binding.loadingIndicator.visibility = it
+            }
         }
     }
 
-    var isLoading = false
-    var isLastPage = false
-    var isScrolling = false
-
-
-    val scrollListener = object : RecyclerView.OnScrollListener() {
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
             if (!recyclerView.canScrollVertically(1) && dy > 0) {
-                isNetworkConnected(requireContext())
-                Log.d("Connecton_status", isNetworkConnected(requireContext()).toString())
                 if (viewModel.isAllowedPagination) {
                     viewModel.isConnected = isNetworkConnected(requireContext())
-                    viewModel.loadNextPage()
+                    viewModel.getData()
                 }
-                Log.d("PAGINATION", "WORK ")
-            } else if (!recyclerView.canScrollVertically(-1) && dy < 0) {
-
-            }
-        }
-
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            super.onScrollStateChanged(recyclerView, newState)
-            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                isScrolling = true
             }
         }
     }
-
 }

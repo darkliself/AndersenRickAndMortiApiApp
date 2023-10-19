@@ -1,25 +1,22 @@
 package com.example.andersenrickandmortiapiapp.data.mappers
 
-import com.example.andersenrickandmortiapiapp.data.room.model.CharacterEntity
-import com.example.andersenrickandmortiapiapp.retrofit.rick_and_morty.models.characters.character_list.CharacterInfo
-import com.example.andersenrickandmortiapiapp.retrofit.rick_and_morty.models.characters.character_list.Location
-import com.example.andersenrickandmortiapiapp.retrofit.rick_and_morty.models.characters.character_list.Origin
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.example.andersenrickandmortiapiapp.data.room.model.entity.CharacterEntity
+import com.example.andersenrickandmortiapiapp.retrofit.models.characters.CharacterInfo
+import com.example.andersenrickandmortiapiapp.retrofit.models.characters.Location
+import com.example.andersenrickandmortiapiapp.retrofit.models.characters.Origin
+
 
 fun CharacterInfo.toCharacterEntity(): CharacterEntity {
-    val gson = Gson()
     return CharacterEntity(
-        id = id,
+        characterId = id,
         name = name,
         created = created,
-        episode = gson.toJson(episode),
         gender = gender,
         image = image,
-        location_name = location.name,
+        locationName = location.name,
         location = location.url,
         origin = origin.url,
-        origin_name = origin.name,
+        originName = origin.name,
         species = species,
         status = status,
         type = type,
@@ -28,22 +25,20 @@ fun CharacterInfo.toCharacterEntity(): CharacterEntity {
 }
 
 fun CharacterEntity.toCharacterInfo(): CharacterInfo {
-    val gson = Gson()
-    val listType = object : TypeToken<List<String>>() {}.type
     return CharacterInfo(
-        id = id,
+        id = characterId,
         name = name,
         created = created,
-        episode = gson.fromJson(episode, listType),
+        episode = emptyList(),
         gender = gender,
         image = image,
         location = Location(
-            name = location_name,
+            name = locationName,
             url = location
         ),
         origin = Origin(
-            name = origin_name,
-            url = location
+            name = originName,
+            url = origin
         ),
         species = species,
         status = status,
@@ -51,3 +46,5 @@ fun CharacterEntity.toCharacterInfo(): CharacterInfo {
         url = url
     )
 }
+
+

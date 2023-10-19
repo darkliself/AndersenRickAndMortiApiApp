@@ -16,25 +16,11 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideAppDatabase(@ApplicationContext appContext: Context): ApplicationRoomDB {
+    fun provideAppDatabase(@ApplicationContext appContext: Context): RoomDataBase {
         return Room.databaseBuilder(
             appContext,
-            ApplicationRoomDB::class.java,
+            RoomDataBase::class.java,
             "RickAndMortyDB"
         ).build()
     }
-
-    @InstallIn(SingletonComponent::class)
-    @Module
-    class DatabaseModule {
-        @Provides
-        fun provideEpisodeDao(appDatabase: ApplicationRoomDB): EpisodeDao {
-            return appDatabase.episodeDao
-        }
-        @Provides
-        fun provideLocationDao(appDatabase: ApplicationRoomDB): LocationDao {
-            return appDatabase.locationDao
-        }
-    }
-
 }

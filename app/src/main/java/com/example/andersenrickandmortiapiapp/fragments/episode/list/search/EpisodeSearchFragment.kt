@@ -16,7 +16,7 @@ class EpisodeSearchFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentEpisodesSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -29,14 +29,14 @@ class EpisodeSearchFragment : BaseFragment() {
         binding.resetFilters.setOnClickListener {
             resetFilters()
         }
-        binding.nameSearch.setOnFocusChangeListener { view, hasFocus ->
+        binding.nameSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 binding.filtersList.visibility = View.VISIBLE
             }
         }
     }
 
-    fun resetFilters() {
+    private fun resetFilters() {
         binding.nameSearch.setText("")
         binding.episodeSearch.setText("")
         binding.filtersList.visibility = View.GONE
@@ -50,11 +50,11 @@ class EpisodeSearchFragment : BaseFragment() {
         viewModel.isConnected = isNetworkConnected(requireContext())
         viewModel.search(
             name = nameQuery.toString(),
-            episode = episodeQuery.toString()
+            episode = episodeQuery.toString(),
+            requireContext()
         )
         binding.filtersList.visibility = View.GONE
         binding.nameSearch.clearFocus()
         closeKeyboard()
     }
-
 }

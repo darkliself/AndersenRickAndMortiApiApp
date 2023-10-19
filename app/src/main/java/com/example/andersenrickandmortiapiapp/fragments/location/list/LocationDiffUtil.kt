@@ -1,11 +1,8 @@
 package com.example.andersenrickandmortiapiapp.fragments.location.list
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.andersenrickandmortiapiapp.retrofit.rick_and_morty.models.locatons.LocationInfo
+import com.example.andersenrickandmortiapiapp.retrofit.models.locatons.LocationInfo
 
-//
-//import androidx.recyclerview.widget.DiffUtil
-//
 class LocationDiffUtil(
     private val oldList: List<LocationInfo>,
     private val newList: List<LocationInfo>

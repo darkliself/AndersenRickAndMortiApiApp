@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.andersenrickandmortiapiapp.R
 import com.example.andersenrickandmortiapiapp.databinding.LocationItemBinding
-import com.example.andersenrickandmortiapiapp.retrofit.rick_and_morty.models.locatons.LocationInfo
+import com.example.andersenrickandmortiapiapp.retrofit.models.locatons.LocationInfo
 
 
 class LocationsAdapter(
@@ -26,6 +26,7 @@ class LocationsAdapter(
         val name = binding.name
         val dimension = binding.dimension
         val type = binding.type
+        val container = binding.container
 
     }
 
@@ -46,17 +47,10 @@ class LocationsAdapter(
         holder.name.text =item.name
         holder.dimension.text = item.dimension
         holder.type.text = item.type
-        holder.name.setOnClickListener {
+        holder.container.setOnClickListener {
             navigateToContactInfoFragment(it, item.id)
         }
     }
-//
-//    fun search(query: String) {
-//        val newList =
-//            ContactsRepo.contactsList.filter { it.name.lowercase().contains(query.lowercase()) }
-//        contactsList = newList
-//    }
-
 
     private fun navigateToContactInfoFragment(view: View, id:Int) {
         val action =

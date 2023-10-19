@@ -23,7 +23,6 @@
             android:hint="@string/search" />
     </com.google.android.material.textfield.TextInputLayout>
 
-
     <LinearLayout
         android:id="@+id/filters_list"
         android:layout_width="fill_parent"
@@ -35,8 +34,8 @@
             android:id="@+id/status_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:checkedButton="@+id/status_none"
+            android:orientation="horizontal"
             android:visibility="visible">
 
             <RadioButton
@@ -81,8 +80,8 @@
             android:id="@+id/gender_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:checkedButton="@+id/gender_none"
+            android:orientation="horizontal"
             android:visibility="visible">
 
             <RadioButton
@@ -123,15 +122,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
-                android:text="@string/submit">
-
-            </Button>
+                android:text="@string/submit" />
 
             <Button
                 android:id="@+id/reset_filters"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/reset"></Button>
+                android:text="@string/reset" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

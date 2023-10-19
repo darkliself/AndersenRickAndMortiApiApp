@@ -4,21 +4,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.andersenrickandmortiapiapp.data.mappers.toCharacterInfo
 import com.example.andersenrickandmortiapiapp.data.mappers.toEpisodesInfo
-import com.example.andersenrickandmortiapiapp.data.room.ApplicationRoomDB
-import com.example.andersenrickandmortiapiapp.repository.RickAndMortyRepository
-import com.example.andersenrickandmortiapiapp.retrofit.rick_and_morty.models.characters.character_list.CharacterInfo
-import com.example.andersenrickandmortiapiapp.retrofit.rick_and_morty.models.episodes.episodes_list.EpisodesInfo
+import com.example.andersenrickandmortiapiapp.data.room.RoomDataBase
+import com.example.andersenrickandmortiapiapp.repository.RetrofitRepository
+import com.example.andersenrickandmortiapiapp.retrofit.models.characters.CharacterInfo
+import com.example.andersenrickandmortiapiapp.retrofit.models.episodes.EpisodesInfo
 import com.example.andersenrickandmortiapiapp.utils.UrlParser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CharacterDetailsViewModel @Inject constructor(
-    private val rickAndMortyRepository: RickAndMortyRepository,
-    db: ApplicationRoomDB
+    private val retrofitRepository: RetrofitRepository,
+    db: RoomDataBase
 ) : ViewModel() {
 
     var isConnected = true
@@ -33,16 +34,22 @@ class CharacterDetailsViewModel @Inject constructor(
     val episode: MutableStateFlow<List<EpisodesInfo>>
         get() = _episode
 
-    fun loadSingleCharacter(id: Int) {
+    fun getCharacterDetails(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             if (isConnected) {
-                _character.emit(rickAndMortyRepository.getCharacterDetails(id))
+                _character.emit(retrofitRepository.getCharacterDetails(id))
             } else {
-                _character.emit(characterDao.getCharacterById(id).toCharacterInfo())
+                val result = characterDao.getCharacterById(id).toCharacterInfo()
+                val listOfEpisodesIds = mutableListOf<String>()
+                characterDao.getCharacterWithEpisodes(id).episode_id.forEach {
+                    listOfEpisodesIds.add(it.episodeId.toString())
+                }
+                result.episode = listOfEpisodesIds
+                _character.emit(result)
             }
-            character.collect { data ->
+            character.collectLatest { data ->
                 if (data != null) {
-                    val arrayOfIds = mutableListOf<String>()
+                    val arrayOfIds = mutableListOf<Int>()
                     data.episode.forEach {
                         arrayOfIds.add(UrlParser.getIdFromUrl(it))
                     }
@@ -53,15 +60,21 @@ class CharacterDetailsViewModel @Inject constructor(
 
     }
 
-    private suspend fun getEpisodesByID(idsList: List<String>) {
+    private suspend fun getEpisodesByID(idsList: List<Int>) {
         if (isConnected) {
-            _episode.emit(rickAndMortyRepository.getEpisodesByID(idsList))
+            _episode.emit(retrofitRepository.getEpisodesByID(idsList))
         } else {
             episodeDao.getListEpisodesById(idsList).collect { list ->
                 if (list.isNotEmpty()) {
                     _episode.emit(list.map { it.toEpisodesInfo() })
                 }
             }
+        }
+    }
+
+    fun clearData() {
+        viewModelScope.launch {
+            _character.emit(null)
         }
     }
 }

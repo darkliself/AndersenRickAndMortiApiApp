@@ -6,11 +6,13 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     tools:context=".fragments.episode.details.EpisodeDetails">
+
     <TextView
         android:id="@+id/episode_details"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/episode_details" />
+
     <TextView
         android:id="@+id/name"
         android:layout_width="wrap_content"
@@ -53,7 +55,6 @@
         android:layout_below="@+id/created"
         android:layout_marginTop="16dp"
         android:clipToPadding="false"
-        android:padding="16dp"
         app:layoutManager="GridLayoutManager"
         app:spanCount="2" />
 </RelativeLayout>

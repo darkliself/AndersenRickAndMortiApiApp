@@ -1,7 +1,7 @@
 package com.example.andersenrickandmortiapiapp.fragments.episode.list
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.andersenrickandmortiapiapp.retrofit.rick_and_morty.models.episodes.episodes_list.EpisodesInfo
+import com.example.andersenrickandmortiapiapp.retrofit.models.episodes.EpisodesInfo
 
 class EpisodesDiffUtil(
     private val oldList: List<EpisodesInfo>,

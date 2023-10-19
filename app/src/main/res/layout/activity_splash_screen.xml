@@ -6,4 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".SplashScreen">
 
+
+    <ImageView
+        android:id="@+id/splash_background"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:contentDescription="@string/none"
+        android:scaleType="fitXY"
+        android:src="@drawable/splash_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/splash_bg" />
 </androidx.constraintlayout.widget.ConstraintLayout>

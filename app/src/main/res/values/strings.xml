@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">AndersenRickAndMortiApiApp</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="no_internet_toast">Check your internet connection</string>
+    <string name="no_results">No results"</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="button">Button</string>
@@ -11,8 +12,8 @@
     <string name="episode">episode</string>
     <string name="air_date">TextView</string>
     <string name="name">name</string>
-    <string name="type" />
-    <string name="dimension" />
+    <string name="type">type</string>
+    <string name="dimension" >dimension</string>
     <string name="episode_details">episode details</string>
     <string name="location_details">Location details</string>
     <string name="species">species</string>
@@ -30,4 +31,9 @@
     <string name="created">created</string>
     <string name="status">status</string>
     <string name="gender">gender</string>
+    <string name="search_by_location">search by location</string>
+    <string name="search_by_episode">search by episode</string>
+    <string name="episode_code">episode code</string>
+    <string name="origin">origin</string>
+    <string name="location">location</string>
 </resources>

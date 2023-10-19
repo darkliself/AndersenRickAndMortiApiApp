@@ -1,11 +1,9 @@
 package com.example.andersenrickandmortiapiapp.fragments.episode.details
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +17,7 @@ import kotlinx.coroutines.launch
 private const val ARG_PARAM1 = "id"
 
 class EpisodeDetails : BaseFragment() {
-    private var value: Int? = null
+    private var id: Int = 0
     private lateinit var recyclerView: RecyclerView
     private var _binding: FragmentEpisodeDetailsBinding? = null
     private val binding get() = _binding!!
@@ -28,8 +26,9 @@ class EpisodeDetails : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            value = it.getInt(ARG_PARAM1)
+            id = it.getInt(ARG_PARAM1)
         }
+        showNoInternetToast()
     }
 
     override fun onCreateView(
@@ -49,29 +48,26 @@ class EpisodeDetails : BaseFragment() {
         recyclerView.apply {
             recyclerView.adapter = adapter
         }
+        addDecoration(recyclerView)
+        viewModel.getEpisodeDetails(id)
 
-        if (value != null) {
-            Log.d("CHARACTER_DATA", value.toString())
-            viewModel.getEpisodeDetails(value!!)
-        } else {
-            Log.d("CHARACTER_DATA", "no data")
-        }
         lifecycleScope.launch {
             viewModel.episode.collect { data ->
                 if (data != null) {
                     binding.name.text = data.name
                     binding.airDate.text = data.airDate
                     binding.episode.text = data.episode
-
-//                    binding.type.text = data.type
-                    binding.url.text = data.url
                     binding.created.text = data.created
-
                     viewModel.characters.collect { list ->
                         adapter.charactersList = list
                     }
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.clearData()
     }
 }

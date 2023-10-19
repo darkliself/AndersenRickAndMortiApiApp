@@ -1,11 +1,8 @@
 package com.example.andersenrickandmortiapiapp.fragments.character.list
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.andersenrickandmortiapiapp.retrofit.rick_and_morty.models.characters.character_list.CharacterInfo
+import com.example.andersenrickandmortiapiapp.retrofit.models.characters.CharacterInfo
 
-//
-//import androidx.recyclerview.widget.DiffUtil
-//
 class CharacterDiffUtil(
     private val oldList: List<CharacterInfo>,
     private val newList: List<CharacterInfo>

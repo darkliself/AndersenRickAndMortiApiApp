@@ -12,7 +12,7 @@ import com.example.andersenrickandmortiapiapp.databinding.EpisodeItemBinding
 import com.example.andersenrickandmortiapiapp.fragments.character.details.CharacterDetailsDirections
 import com.example.andersenrickandmortiapiapp.fragments.location.details.LocationDetailsDirections
 import com.example.andersenrickandmortiapiapp.navigation_data.StartRoute
-import com.example.andersenrickandmortiapiapp.retrofit.rick_and_morty.models.episodes.episodes_list.EpisodesInfo
+import com.example.andersenrickandmortiapiapp.retrofit.models.episodes.EpisodesInfo
 
 
 class EpisodesAdapter(
@@ -31,6 +31,7 @@ class EpisodesAdapter(
         val name = binding.name
         val episode = binding.episode
         val airDate = binding.airDate
+        val container = binding.container
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EpisodeListViewHolder {
@@ -50,7 +51,7 @@ class EpisodesAdapter(
         holder.name.text = item.name
         holder.episode.text = item.episode
         holder.airDate.text = item.airDate
-        holder.name.setOnClickListener {
+        holder.container.setOnClickListener {
             navigateToEpisodeDetails(it, item.id)
         }
     }

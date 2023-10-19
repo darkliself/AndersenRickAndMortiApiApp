@@ -20,8 +20,7 @@ class CharactersSearchFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    ): View {
         _binding = FragmentCharactersSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -34,7 +33,7 @@ class CharactersSearchFragment : BaseFragment() {
         binding.resetFilters.setOnClickListener {
             resetFilters()
         }
-        binding.nameSearch.setOnFocusChangeListener { view, hasFocus ->
+        binding.nameSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 binding.filtersList.visibility = View.VISIBLE
             }
@@ -61,12 +60,13 @@ class CharactersSearchFragment : BaseFragment() {
         val speciesQuery = binding.speciesSearch.text
         viewModel.isConnected = isNetworkConnected(requireContext())
         viewModel.search(
-            CharterSearchQuery(
+            query = CharterSearchQuery(
                 name = nameQuery.toString(),
                 status = selectedStatusOption.toString(),
                 species = speciesQuery.toString(),
                 gender = selectedGenderOption.toString()
             ).noneToNull(),
+            context = requireContext()
         )
         binding.filtersList.visibility = View.GONE
         binding.nameSearch.clearFocus()

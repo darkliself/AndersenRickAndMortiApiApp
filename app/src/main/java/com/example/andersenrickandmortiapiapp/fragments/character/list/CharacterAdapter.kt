@@ -13,7 +13,7 @@ import com.example.andersenrickandmortiapiapp.databinding.CharacterItemBinding
 import com.example.andersenrickandmortiapiapp.fragments.episode.details.EpisodeDetailsDirections
 import com.example.andersenrickandmortiapiapp.fragments.location.details.LocationDetailsDirections
 import com.example.andersenrickandmortiapiapp.navigation_data.StartRoute
-import com.example.andersenrickandmortiapiapp.retrofit.rick_and_morty.models.characters.character_list.CharacterInfo
+import com.example.andersenrickandmortiapiapp.retrofit.models.characters.CharacterInfo
 
 
 class CharacterAdapter(
@@ -36,7 +36,6 @@ class CharacterAdapter(
         val gender = binding.gender
         val image = binding.image
         val container  = binding.container
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharacterViewHolder {
@@ -52,25 +51,21 @@ class CharacterAdapter(
     }
 
     override fun onBindViewHolder(holder: CharacterViewHolder, position: Int) {
-
         val item = charactersList[position]
         holder.name.text = item.name
         holder.species.text = item.species
         holder.gender.text = item.gender
         holder.status.text = item.status
-        holder.image.load(item.image)
+        holder.image.load(item.image) {
+            placeholder(R.drawable.placeholder)
+            error(R.drawable.placeholder)
+            build()
+        }
         holder.container.setOnClickListener {
             navigateToCharacterDetails(it, item.id)
         }
 
     }
-//
-//    fun search(query: String) {
-//        val newList =
-//            ContactsRepo.contactsList.filter { it.name.lowercase().contains(query.lowercase()) }
-//        contactsList = newList
-//    }
-
 
     private fun navigateToCharacterDetails(view: View, id: Int) {
         val action: NavDirections = when (startRoute) {

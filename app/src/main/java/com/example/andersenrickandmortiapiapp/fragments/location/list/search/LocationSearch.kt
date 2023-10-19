@@ -11,14 +11,13 @@ import com.example.andersenrickandmortiapiapp.fragments.location.list.LocationVi
 
 
 class LocationSearch : BaseFragment() {
-
     private var _binding: FragmentLocationsSearchBinding? = null
     private val binding get() = _binding!!
     private val viewModel: LocationViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentLocationsSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -31,7 +30,7 @@ class LocationSearch : BaseFragment() {
         binding.resetFilters.setOnClickListener {
             resetFilters()
         }
-        binding.nameSearch.setOnFocusChangeListener { view, hasFocus ->
+        binding.nameSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 binding.filtersList.visibility = View.VISIBLE
             }
@@ -55,7 +54,8 @@ class LocationSearch : BaseFragment() {
         viewModel.search(
             name = nameQuery.toString(),
             type = typeQuery.toString(),
-            dimension = dimensionQuery.toString()
+            dimension = dimensionQuery.toString(),
+            context = requireContext()
         )
         binding.filtersList.visibility = View.GONE
         binding.nameSearch.clearFocus()

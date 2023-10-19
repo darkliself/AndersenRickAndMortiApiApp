@@ -1,96 +1,100 @@
 package com.example.andersenrickandmortiapiapp.fragments.episode.list
 
+import android.content.Context
+import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.andersenrickandmortiapiapp.R
 import com.example.andersenrickandmortiapiapp.data.mappers.toEpisodesInfo
-import com.example.andersenrickandmortiapiapp.repository.RoomDbRepository
-import com.example.andersenrickandmortiapiapp.repository.UseCase
-import com.example.andersenrickandmortiapiapp.retrofit.rick_and_morty.models.episodes.episodes_list.EpisodesInfo
+import com.example.andersenrickandmortiapiapp.data.room.RoomDataBase
+import com.example.andersenrickandmortiapiapp.repository.RetrofitRepository
+import com.example.andersenrickandmortiapiapp.retrofit.models.episodes.EpisodesInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.math.ceil
 
 
 @HiltViewModel
 class EpisodesViewModel @Inject constructor(
-    private val roomDbRepository: RoomDbRepository,
-    private val useCase: UseCase,
+    private val roomDb: RoomDataBase,
+    private val retrofitRepository: RetrofitRepository
 ) : ViewModel() {
-    var isAllowedPagination = true
+    private var isAllowedPagination = true
     var isConnected = true
     private val _episodes = MutableStateFlow<List<EpisodesInfo>>(emptyList())
     val episodes: MutableStateFlow<List<EpisodesInfo>>
         get() = _episodes
-    private val _error = MutableStateFlow(false)
-    val error: MutableStateFlow<Boolean>
-        get() = _error
-    private var _isLoading = MutableStateFlow(false)
-    val isLoading: MutableStateFlow<Boolean>
+    private var _isLoading = MutableStateFlow(View.INVISIBLE)
+    val isLoading: MutableStateFlow<Int>
         get() = _isLoading
+
     private var pagesCount = 0
-    private var pageIndex = 1
+    private var pageIndex = 0
     private var elementsPerPage = 20
 
-    fun loadNextPage() {
-        if (pageIndex >= pagesCount) {
+    fun getData() {
+        if (pageIndex >= pagesCount && pagesCount != 0) {
             return
         }
         pageIndex++
         viewModelScope.launch(Dispatchers.IO) {
+            _isLoading.emit(View.VISIBLE)
             if (isConnected) {
-                _episodes.emit(episodes.value.plus(useCase.getEpisodesAndSaveToDb(pageIndex)))
+                val queryResult = retrofitRepository.getEpisodes(pageIndex)
+                pagesCount = queryResult.info.pages
+                _episodes.emit(episodes.value.plus(queryResult.listOfEpisodes))
             } else {
-                roomDbRepository.db.episodeDao.getAllEpisodes().collect { list ->
+                roomDb.episodeDao.getAllEpisodes().collect { list ->
                     if (list.isNotEmpty()) {
                         _episodes.emit(list.map { it.toEpisodesInfo() }
                             .take(elementsPerPage * pageIndex))
-                    } else {
-                        _error.emit(true)
                     }
+                    _isLoading.emit(View.INVISIBLE)
                 }
             }
+            _isLoading.emit(View.INVISIBLE)
         }
     }
 
-    fun initEpisodesList() {
-        viewModelScope.launch(Dispatchers.IO) {
-            if (isConnected) {
-                val queryResult = useCase.getEpisodesAndSaveToDb(pageIndex)
-                pagesCount = useCase.episodePagesCount
-                _episodes.emit(queryResult)
-            } else {
-                roomDbRepository.db.episodeDao.getAllEpisodes().collect { list ->
-                    if (list.isNotEmpty() && pagesCount == 0) {
-                        pagesCount = ceil(list.size.toFloat() / elementsPerPage.toFloat()).toInt()
-                        val result = list.map { it.toEpisodesInfo() }.take(elementsPerPage)
-                        _episodes.emit(result)
-                    } else {
-                        _error.emit(true)
-                    }
-                }
-            }
-        }
-    }
-
-    fun search(name: String, episode: String) {
-        viewModelScope.launch(Dispatchers.IO) {
+    fun search(name: String, episode: String, context: Context) {
+        viewModelScope.launch {
             var queryResult = emptyList<EpisodesInfo>()
-             if (isConnected) {
-                 queryResult = useCase.searchEpisodes(name, episode).listOfEpisodes
+            if (isConnected) {
+                withContext(Dispatchers.IO) {
+                    retrofitRepository.searchEpisodes(name, episode).let {
+                        if (it != null) {
+                            queryResult = it.listOfEpisodes
+                        }
+                    }
+                }
             } else {
-                 queryResult =  roomDbRepository.db.episodeDao.getFilteredEpisodes(
-                    name = name,
-                    episode = episode,
-
+                withContext(Dispatchers.IO) {
+                    queryResult = roomDb.episodeDao.getFilteredEpisodes(
+                        name = name,
+                        episode = episode,
                     ).map { it.toEpisodesInfo() }
+                }
             }
             if (queryResult.isNotEmpty()) {
                 isAllowedPagination = false
                 _episodes.emit(queryResult)
+            } else {
+                Toast.makeText(context, context.getString(R.string.no_results), Toast.LENGTH_LONG)
+                    .show()
             }
         }
+    }
+
+    fun refreshState() {
+        viewModelScope.launch {
+            _episodes.emit(emptyList())
+        }
+        pageIndex = 0
+        isAllowedPagination = true
+        getData()
     }
 }

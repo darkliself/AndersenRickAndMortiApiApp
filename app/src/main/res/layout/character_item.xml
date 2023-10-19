@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
-    android:id="@+id/container"
     android:clickable="true"
-    >
-
+    android:padding="16dp"
+    android:paddingStart="32dp">
 
     <ImageView
         android:id="@+id/image"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:contentDescription="@string/none"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
@@ -23,7 +20,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/image"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="6dp"
         android:text="@string/name"
 
@@ -34,7 +30,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/name"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="6dp"
         android:text="@string/species" />
 
@@ -43,7 +38,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/species"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="6dp"
         android:text="@string/status" />
 
@@ -52,9 +46,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/status"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="6dp"
         android:text="@string/gender" />
-
-
 </RelativeLayout>

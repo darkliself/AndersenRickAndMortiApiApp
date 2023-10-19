@@ -18,47 +18,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/location_details"
-        android:text="name" />
+        android:text="@string/name" />
 
     <TextView
         android:id="@+id/type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/name"
-
-        android:text="type" />
+        android:text="@string/type" />
 
     <TextView
         android:id="@+id/dimension"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/type"
-        android:text="dimension" />
-
-    <TextView
-        android:id="@+id/url"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/dimension"
-        android:text="url" />
+        android:text="@string/dimension" />
 
     <TextView
         android:id="@+id/created"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/url"
-        android:text="created" />
+        android:layout_below="@+id/dimension"
+        android:text="@string/created" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/character_item_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/created"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
         android:clipToPadding="false"
-        android:padding="16dp"
         app:layoutManager="GridLayoutManager"
         app:spanCount="2" />
 </RelativeLayout>

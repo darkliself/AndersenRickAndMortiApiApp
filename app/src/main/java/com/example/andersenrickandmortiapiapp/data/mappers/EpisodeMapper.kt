@@ -1,18 +1,14 @@
 package com.example.andersenrickandmortiapiapp.data.mappers
 
-import com.example.andersenrickandmortiapiapp.retrofit.rick_and_morty.models.episodes.episodes_list.EpisodesInfo
-import com.example.andersenrickandmortiapiapp.data.room.model.EpisodeEntity
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.example.andersenrickandmortiapiapp.data.room.model.entity.EpisodeEntity
+import com.example.andersenrickandmortiapiapp.retrofit.models.episodes.EpisodesInfo
+
 
 fun EpisodesInfo.toEpisodeEntity(): EpisodeEntity {
-    val gson = Gson()
     return EpisodeEntity(
-
-        id = id,
+        episodeId = id,
         name = name,
-        air_date = airDate,
-        characters = gson.toJson(characters),
+        airDate = airDate,
         created = created,
         episode = episode,
         url = url
@@ -20,13 +16,11 @@ fun EpisodesInfo.toEpisodeEntity(): EpisodeEntity {
 }
 
 fun EpisodeEntity.toEpisodesInfo(): EpisodesInfo {
-    val gson = Gson()
-    val listType = object : TypeToken<List<String>>() {}.type
     return EpisodesInfo(
-        id = id,
+        id = episodeId,
         name = name,
-        airDate = air_date,
-        characters = gson.fromJson(characters, listType),
+        airDate = airDate,
+        characters = emptyList(),
         created = created,
         episode = episode,
         url = url
