@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.andersenrickandmortiapiapp.databinding.FragmentLocationDetailsBinding
 import com.example.andersenrickandmortiapiapp.fragments.BaseFragment
 import com.example.andersenrickandmortiapiapp.fragments.character.list.CharacterAdapter
-import com.example.andersenrickandmortiapiapp.navigation_data.StartRoute
+import com.example.andersenrickandmortiapiapp.data.navigation.StartRoute
 import kotlinx.coroutines.launch
 
 

@@ -16,7 +16,7 @@ import com.example.andersenrickandmortiapiapp.R
 import com.example.andersenrickandmortiapiapp.databinding.FragmentCharacterDetailsBinding
 import com.example.andersenrickandmortiapiapp.fragments.BaseFragment
 import com.example.andersenrickandmortiapiapp.fragments.episode.list.EpisodesAdapter
-import com.example.andersenrickandmortiapiapp.navigation_data.StartRoute
+import com.example.andersenrickandmortiapiapp.data.navigation.StartRoute
 import kotlinx.coroutines.launch
 
 private const val ARG_CHARACTER_ID = "id"

@@ -1,4 +1,4 @@
-package com.example.andersenrickandmortiapiapp.navigation_data
+package com.example.andersenrickandmortiapiapp.data.navigation
 
 enum class StartRoute {
     CHARACTERS,

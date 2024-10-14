@@ -1,4 +1,4 @@
-package com.example.andersenrickandmortiapiapp.retrofit.module
+package com.example.andersenrickandmortiapiapp.di
 
 import com.example.andersenrickandmortiapiapp.retrofit.api.RickAndMortyApiInterface
 import dagger.Module

@@ -11,7 +11,7 @@ import com.example.andersenrickandmortiapiapp.R
 import com.example.andersenrickandmortiapiapp.databinding.EpisodeItemBinding
 import com.example.andersenrickandmortiapiapp.fragments.character.details.CharacterDetailsDirections
 import com.example.andersenrickandmortiapiapp.fragments.location.details.LocationDetailsDirections
-import com.example.andersenrickandmortiapiapp.navigation_data.StartRoute
+import com.example.andersenrickandmortiapiapp.data.navigation.StartRoute
 import com.example.andersenrickandmortiapiapp.retrofit.models.episodes.EpisodesInfo
 
 
